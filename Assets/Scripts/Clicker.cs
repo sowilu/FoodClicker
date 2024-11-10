@@ -13,6 +13,9 @@ public class Clicker : MonoBehaviour
     [Header("Audio")]
     public AudioClip clickSound;
 
+    [Header("VFX")]
+    public ParticleSystem clickVFX;
+
 
     [HideInInspector]public int clicks = 0;
     private AudioSource audioSource;
@@ -24,6 +27,7 @@ public class Clicker : MonoBehaviour
 
     private void OnMouseDown() 
     {
+        clickVFX.Emit(1);
         clicks++;
         //Debug.Log("Clicks: " + clicks);
         UiManager.instance.UpdateClicks(clicks);

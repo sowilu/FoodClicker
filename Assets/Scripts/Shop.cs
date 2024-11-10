@@ -8,12 +8,15 @@ public class Shop : MonoBehaviour
     public int price = 10;
     public TextMeshProUGUI countText;
     public int count = 0;
+    public int cpb = 1;//clicks per baker
+    public float bakerSpeed = 2f;
 
     private Clicker clicker;
 
     private void Start() 
     {
         clicker = FindObjectOfType<Clicker>();
+        InvokeRepeating("Cook", 0, bakerSpeed);
     }
 
 
@@ -30,5 +33,12 @@ public class Shop : MonoBehaviour
             price = (int)(price * 1.1f);//price increase 10%;
             priceText.text = $"Price: {price}";
         }
+    }
+
+    void Cook()
+    {
+        clicker.clickVFX.Emit(cpb * count);
+        clicker.clicks += cpb * count;
+        UiManager.instance.UpdateClicks(clicker.clicks);
     }
 }
