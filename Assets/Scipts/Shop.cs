@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Shop : MonoBehaviour
@@ -12,12 +13,22 @@ public class Shop : MonoBehaviour
     public int grannyCount = 0;
     public int cpg = 1; //cookies per granny
     public float cookTime = 1;
+    [Header("Upgrades")]
+
+    public ShopButton upgradeButton;
+
+    public float upgradePrice = 100;
+
+    public int upgradeCount = 0;
 
 
     private Clikcer clikcer;
 
     void Start()
     {
+        grannyPrice = PlayerPrefs.GetInt("grannyPrice", 0);
+        grannyCount = PlayerPrefs.GetInt("grannyCount", 0);
+        grannyButton.UpdateText((int)Mathf.Ceil(grannyPrice),grannyCount);
         //search in whole scene for object with type Clikcer
         clikcer = FindAnyObjectByType<Clikcer>();
 
@@ -43,5 +54,29 @@ public class Shop : MonoBehaviour
         clickParticles.Emit(particles);
         clikcer.clicks += grannyCount * cpg;
         UiManager.instance.UpdateClicks(clikcer.clicks);
+    }
+    private void OnApplicationQuit()
+    {
+        Save();   
+    }
+    private void Save()
+    {
+        PlayerPrefs.SetFloat("grannyPrice", grannyPrice);
+        PlayerPrefs.SetInt("grannycount", grannyCount);
+        PlayerPrefs.Save();
+    }
+    public void BuyUpgrade()
+    {
+        if(clikcer.clicks >= upgradePrice)
+        {
+            clikcer.clicks -= (int)Mathf.Ceil(upgradePrice);
+            UiManager.instance.UpdateClicks(clikcer.clicks);
+
+            upgradeCount++;
+            upgradePrice = upgradePrice * 2f;
+            upgradeButton.UpdateText((int)Mathf.Ceil(upgradePrice),upgradeCount);
+
+            clikcer.UpdateCokie();
+        }
     }
 }
