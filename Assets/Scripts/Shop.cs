@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 
@@ -15,6 +16,11 @@ public class Shop : MonoBehaviour
 
     private void Start() 
     {
+        count = PlayerPrefs.GetInt("bakerCount", 0);
+        price = PlayerPrefs.GetInt("bakerPrice", 10);
+        countText.text = count.ToString();
+        priceText.text = $"Price: {price}";
+
         clicker = FindObjectOfType<Clicker>();
         InvokeRepeating("Cook", 0, bakerSpeed);
     }
@@ -40,5 +46,23 @@ public class Shop : MonoBehaviour
         clicker.clickVFX.Emit(cpb * count);
         clicker.clicks += cpb * count;
         UiManager.instance.UpdateClicks(clicker.clicks);
+    }
+    private void OnApplicationPause(bool pauseStatus) 
+    {
+        if(pauseStatus)
+        {
+            Save();
+        }
+    }
+
+    private void OnApplicationQuit() 
+    {
+        Save();
+    }
+    public void Save()
+    {
+        PlayerPrefs.SetInt("bakerCount", count);
+        PlayerPrefs.SetInt("bakerPrice", price);
+        PlayerPrefs.Save();
     }
 }
