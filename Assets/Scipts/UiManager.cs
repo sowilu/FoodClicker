@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class UiManager : MonoBehaviour
     public static UiManager instance;
 
     public TextMeshProUGUI clickerText;
+    public TextMeshProUGUI cpsText;
 
     //step 2: awake function is called before start, 
     //we use awake because instance may be called in start method
@@ -32,5 +34,10 @@ public class UiManager : MonoBehaviour
     public void UpdateClicks(int clicks)
     {
         clickerText.text = clicks.ToString();
+    }
+
+    public void UpdateCps(int cps)
+    {
+        cpsText.text = $"{cps} cps";
     }
 }
