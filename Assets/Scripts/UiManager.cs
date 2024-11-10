@@ -8,6 +8,7 @@ public class UiManager : MonoBehaviour
     //step 1: create a static instance of this class
     public static UiManager instance;
     public TextMeshProUGUI clickText;
+    public TextMeshProUGUI cpsText;
 
     //step 2: method thats executed earlier than Start()
     private void Awake()
@@ -29,4 +30,9 @@ public class UiManager : MonoBehaviour
     {
         clickText.text = clicks.ToString();
     }
+
+    public void UpdateCps(int cps)
+    {
+        cpsText.text = $"{cps} cps";
+    }   
 }

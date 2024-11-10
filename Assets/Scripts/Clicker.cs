@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class Clicker : MonoBehaviour
 {
@@ -16,10 +17,16 @@ public class Clicker : MonoBehaviour
 
     [HideInInspector]public int clicks = 0;
     private AudioSource audioSource;
+    private int oldClicks = 0;
+
 
     private void Start() 
     {
+        oldClicks = clicks = PlayerPrefs.GetInt("clicks", 0);
+        UiManager.instance.UpdateClicks(clicks);
+
         audioSource = GetComponent<AudioSource>();
+        InvokeRepeating("CountCps", 1, 1);
     }
 
     private void OnMouseDown() 
@@ -37,5 +44,31 @@ public class Clicker : MonoBehaviour
             .ChangeStartValue(scale * Vector3.one)
             .SetEase(ease);
             //.SetLoops(2, LoopType.Yoyo);3
+    }
+
+    void CountCps()
+    {
+        int cps = clicks - oldClicks;
+        oldClicks = clicks;
+
+        if(cps > 0)
+            UiManager.instance.UpdateCps(cps);
+    }
+
+    private void OnApplicationPause(bool pauseStatus) 
+    {
+        if(pauseStatus)
+            Save();
+    }
+
+    private void OnApplicationQuit()
+    {
+        Save();
+    }
+
+    private void Save()
+    {
+        PlayerPrefs.SetInt("clicks", clicks);
+        PlayerPrefs.Save();
     }
 }
